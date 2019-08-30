@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">DaPinDao</string>
+    <string name="login_text">您好,\n欢迎来到大频道</string>
+    <string name="homepage">首页</string>
+    <string name="college">学院</string>
+    <string name="found">发现</string>
+    <string name="my">我的</string>
+    <string name="video_play_count">%s次播放</string>
+    <string name="video_parse_busy">视频解析繁忙，请更换网络或稍后再试</string>
+    <string name="video_parse_error">解析视频失败，请重试</string>
+    <string name="pause">暂停</string>
+    <string name="resume">恢复</string>
+    <string name="download">下载</string>
+    <string name="delete">删除</string>
+    <string name="cancel">取消</string>
+    <string name="view">查看</string>
+    <string name="percent_progress">%1$d%%</string>
+    <string name="retry">重试</string>
+    <string name="start">开始</string>
+    <string name="download_eta_sec">%1$ds left</string>
+    <string name="download_eta_min">%1$dm %2$ds left</string>
+    <string name="download_eta_hrs">%1$dh %2$dm %3$ds left</string>
+    <string name="download_speed_bytes">%1$d B/s</string>
+    <string name="download_speed_kb">%1$s KB/s</string>
+    <string name="download_speed_mb">%1$s MB/s</string>
+    <string name="delete_title">你确定要删除 %1$s?</string>
+</resources>

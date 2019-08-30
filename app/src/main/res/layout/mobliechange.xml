@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#F9F9F9"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ToolbarTheme">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/back"
+                />
+            <TextView
+                android:text="更改手机号"
+                android:id="@+id/toolbar_title"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="@dimen/dp_20"
+                android:id="@+id/moblie_phone"
+                android:layout_marginLeft="21dp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当前绑定 +86 139****6666"
+                />
+
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <EditText
+                    android:id="@+id/newMobile"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:inputType="phone"
+                    android:paddingLeft="32dp"
+                    android:textSize="15sp"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="请输入新手机号"
+                    />
+
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <EditText
+                    android:id="@+id/code"
+                    android:layout_toLeftOf="@+id/Get_verification_code"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:inputType="number"
+                    android:paddingLeft="32dp"
+                    android:textSize="15sp"
+                    android:background="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="请输入验证码"
+                    />
+                <TextView
+                    android:layout_marginRight="90dp"
+                    android:id="@+id/Get_verification_code"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="获取验证码"/>
+
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+
+            <Button
+                android:id="@+id/confirm_btn"
+                android:text="确 定"
+                android:textColor="@color/black"
+                android:background="@drawable/login_btn_backgroud_unfocus"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</LinearLayout>

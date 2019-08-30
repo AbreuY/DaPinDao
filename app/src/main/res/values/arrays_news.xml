@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="channel">
+        <item>关注</item>
+        <item>推荐</item>
+        <item>16小时热榜</item>
+        <item>快讯</item>
+        <item>专题</item>
+        <item>影评</item>
+        <item>吆看</item>
+        <item>活动</item>
+        <item>影投</item>
+        <item>公司</item>
+        <item>电影</item>
+        <item>剧集</item>
+        <item>职场</item>
+        <item>票房</item>
+        <item>广告</item>
+        <item>海外</item>
+        <item>衍生品</item>
+        <item>电影节</item>
+        <item>综艺</item>
+        <item>动漫</item>
+        <item>纪录片</item>
+
+    </string-array>
+    <string-array name="channel_code">
+        <item>Focuson</item>
+        <item>recommended</item>
+        <item>Hot_list</item>
+        <item>alerts</item>
+        <item>project</item>
+        <item>Film_critics</item>
+        <item>Large_watch</item>
+        <item>activity</item>
+        <item>shadow_cast</item>
+        <item>company</item>
+        <item>movie</item>
+        <item>series</item>
+        <item>workplace</item>
+        <item>Box_office</item>
+        <item>advertising</item>
+        <item>overseas</item>
+        <item>derivatives</item>
+        <item>festival</item>
+        <item>variety</item>
+        <item>anime</item>
+        <item>documentary</item>
+    </string-array>
+</resources>

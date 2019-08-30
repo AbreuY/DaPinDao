@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:elevation="0dp"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ToolbarTheme">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/back"
+                />
+            <TextView
+                android:text="个人资料"
+                android:id="@+id/toolbar_title"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+    <com.example.dapindao.utils.MyScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/take_photo"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_centerVertical="true"
+                    android:text="头 像"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/roundedImageView"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitXY"
+                    app:riv_corner_radius="10dp"
+                    app:riv_mutate_background="true"
+                    app:riv_oval="true" />
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+            <RelativeLayout
+                android:id="@+id/userName_btn"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_centerVertical="true"
+                    android:text="昵 称"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#AAAAAA"
+                    android:text="每天祭**编辑"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/backs"
+                    />
+                <ImageView
+                    android:id="@+id/backs"
+                    android:layout_marginRight="31dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="8dp"
+                    android:layout_height="17dp"
+                    android:src="@mipmap/backs"
+                    />
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+
+            <TextView
+                android:gravity="center_vertical"
+                android:paddingLeft="21dp"
+                android:textColor="#252525"
+                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="简 介 :"
+                />
+            
+            <EditText
+                android:paddingTop="10dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="top"
+                android:hint="填写简介..."
+                android:textSize="10sp"
+                android:background="#F5F5F5"
+                android:layout_margin="21dp"
+                android:maxLength="100"
+                android:layout_width="match_parent"
+                android:layout_height="111dp" />
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_centerVertical="true"
+                    android:text="我的二维码"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+                <ImageView
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/qrbg"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/back1"
+                    />
+                <ImageView
+                    android:id="@+id/back1"
+                    android:layout_marginRight="31dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="8dp"
+                    android:layout_height="17dp"
+                    android:src="@mipmap/backs"
+                    />
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_centerVertical="true"
+                    android:text="我的ID"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="30dp"
+                    android:textColor="#AAAAAA"
+                    android:text="123456"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_centerVertical="true"
+                    android:text="身 份"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="30dp"
+                    android:textColor="#AAAAAA"
+                    android:text="个人"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+            </RelativeLayout>
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+
+
+
+
+
+
+
+        </LinearLayout>
+    </com.example.dapindao.utils.MyScrollView>
+
+
+
+
+</LinearLayout>
