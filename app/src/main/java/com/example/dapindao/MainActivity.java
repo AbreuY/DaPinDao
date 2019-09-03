@@ -75,12 +75,13 @@ public class MainActivity extends BaseActivity {
         toolbar.setVisibility(View.GONE);
         //home back
         JzvdStd.goOnPlayOnResume();
+        Log.e("token是：", "onCreate: "+token );
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //     Jzvd.clearSavedProgress(this, null);
+        //Jzvd.clearSavedProgress(this, null);
         //home back
         JzvdStd.goOnPlayOnPause();
     }

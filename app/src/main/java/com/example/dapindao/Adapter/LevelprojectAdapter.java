@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.example.dapindao.Model.HotListModel;
 import com.example.dapindao.Model.RecommendedModel;
 import com.example.dapindao.R;
-import com.example.dapindao.utils.MyJZVideoPlayerStandard;
 import com.example.dapindao.utils.RelativeDateFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -25,15 +23,13 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.jzvd.JzvdStd;
-
-public class MysubscriptionAdapter extends RecyclerView.Adapter implements View.OnClickListener {
+public class LevelprojectAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 
     public static final int VIEW_TYPE_ITEM = 1;
     public static final int VIEW_TYPE_EMPTY = 0;
     private Context context;
     private JsonArray model;
-    public MysubscriptionAdapter(Context context,JsonArray model){
+    public LevelprojectAdapter(Context context,JsonArray model){
         this.context = context;
         this.model = model;
     }
@@ -52,7 +48,7 @@ public class MysubscriptionAdapter extends RecyclerView.Adapter implements View.
         }
 
         View baseView;
-        baseView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.mysubscription_data, viewGroup, false);
+        baseView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.secondary_data, viewGroup, false);
         BodyViewHolder bodyViewHolder = new BodyViewHolder(baseView);
         baseView.setOnClickListener(this);
         return bodyViewHolder;
@@ -62,13 +58,12 @@ public class MysubscriptionAdapter extends RecyclerView.Adapter implements View.
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if(viewHolder instanceof BodyViewHolder){
             JsonObject object =model.get(i).getAsJsonObject();
-            JsonObject project = object.get("project").getAsJsonObject();
-            ((BodyViewHolder) viewHolder).name.setText(project.get("name").getAsString());
-            ((BodyViewHolder) viewHolder).createTime.setText(object.get("createTime").getAsString());
-            Glide.with(context).load(project.get("imgPath").getAsString()).into(  ((BodyViewHolder) viewHolder).imgPath);
-  /*         if(project.get("isSub").getAsString().equals("1")){
-               ((BodyViewHolder)viewHolder).isSub.setText("已订阅");
-            }*/
+            ((BodyViewHolder) viewHolder).title.setText(object.get("title").getAsString());
+            Glide.with(context).load(object.get("imgPath").getAsString()).into(((BodyViewHolder) viewHolder).imgPath);
+            ((BodyViewHolder) viewHolder).reading.setText("阅读"+object.get("isRec").getAsString());
+            Log.e("TAG", "onBindViewHolder: "+object.get("publishDate").getAsString() );
+            ((BodyViewHolder) viewHolder).publishDatea.setText(RelativeDateFormat.format(object.get("publishDate").getAsString()));
+           // ((BodyViewHolder) viewHolder).publishDate.setText(RelativeDateFormat.format(object.get("publishDate").getAsString()));
 
         }
         viewHolder.itemView.setTag(i);
@@ -122,17 +117,17 @@ public class MysubscriptionAdapter extends RecyclerView.Adapter implements View.
     public class BodyViewHolder extends RecyclerView.ViewHolder {
 
         private RoundedImageView imgPath;
-        private TextView name;
-        private TextView createTime;
-        private TextView isSub;
+        private TextView title;
+        private TextView reading;
+        private TextView publishDatea;
 
 
         public BodyViewHolder(View itemView) {
             super(itemView);
             imgPath = (RoundedImageView) itemView.findViewById(R.id.imgPath);
-            name = (TextView) itemView.findViewById(R.id.name);
-            createTime = (TextView) itemView.findViewById(R.id.createTime);
-            isSub = (TextView) itemView.findViewById(R.id.isSub);
+            title = (TextView) itemView.findViewById(R.id.title);
+            reading = (TextView) itemView.findViewById(R.id.reading);
+            publishDatea = (TextView) itemView.findViewById(R.id.publishDatea);
 
         }
 

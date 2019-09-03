@@ -58,14 +58,8 @@ public class AlertAdapter extends RecyclerView.Adapter implements View.OnClickLi
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if(viewHolder instanceof BodyViewHolder){
             JsonObject object =model.get(i).getAsJsonObject();
-                ((BodyViewHolder) viewHolder).title.setText(object.get("title").getAsString());
-                if(!object.get("imgPath").isJsonNull()){
-                    Glide.with(context).load(object.get("imgPath").getAsString()).into(((BodyViewHolder) viewHolder).imgPath);
-                }else {
-                    ((BodyViewHolder) viewHolder).imgPath.setImageDrawable(context.getDrawable(R.drawable.empty_img));
-                }
-
-
+            ((BodyViewHolder) viewHolder).title.setText(object.get("title").getAsString());
+            ((BodyViewHolder) viewHolder).content.setText(object.get("content").getAsString());
         }
         viewHolder.itemView.setTag(i);
     }
@@ -117,16 +111,16 @@ public class AlertAdapter extends RecyclerView.Adapter implements View.OnClickLi
      */
     public class BodyViewHolder extends RecyclerView.ViewHolder {
 
-        private RoundedImageView imgPath;
         private TextView title;
         private TextView reading;
+        private TextView content;
 
 
         public BodyViewHolder(View itemView) {
             super(itemView);
-            imgPath = (RoundedImageView) itemView.findViewById(R.id.imgPath);
             title = (TextView) itemView.findViewById(R.id.title);
             reading = (TextView) itemView.findViewById(R.id.reading);
+            content = (TextView) itemView.findViewById(R.id.content);
 
         }
 

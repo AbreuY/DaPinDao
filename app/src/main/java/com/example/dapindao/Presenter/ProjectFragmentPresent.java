@@ -1,6 +1,7 @@
 package com.example.dapindao.Presenter;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -8,6 +9,7 @@ import com.example.dapindao.API.DaPinDaoAPI;
 import com.example.dapindao.Adapter.ProjectAdapter;
 import com.example.dapindao.Interface.ProjectInterface;
 import com.example.dapindao.Model.ProjectModel;
+import com.example.dapindao.View.LevelProjectActivity;
 import com.example.dapindao.View.ProjectActivity;
 import com.example.dapindao.View.ProjectFragment;
 import com.example.dapindao.retrofit.HttpHelper;
@@ -24,14 +26,15 @@ public class ProjectFragmentPresent implements ProjectInterface.Presenter {
     private ProjectInterface.View view;
     private ProjectModel projectModel;
     private List<ProjectModel.ResultBean.RowsBean> list = new ArrayList<>();
+
     public ProjectFragmentPresent(ProjectFragment activity,ProjectInterface.View view){
         this.activity = activity;
         this.view = view;
     }
 
     @Override
-    public void getType1Page(int pageNum, int pageSize, String search) {
-        Call<ProjectModel> call= HttpHelper.getInstance().create(DaPinDaoAPI.class).getType1Page(pageNum,pageSize,search);
+    public void getType1Page(int pageNum, int pageSize, String search,int UserId) {
+        Call<ProjectModel> call= HttpHelper.getInstance().create(DaPinDaoAPI.class).getType1Page(pageNum,pageSize,search,UserId);
         call.enqueue(new Callback<ProjectModel>() {
             @Override
             public void onResponse(Call<ProjectModel> call, Response<ProjectModel> response) {
@@ -47,7 +50,10 @@ public class ProjectFragmentPresent implements ProjectInterface.Presenter {
                         activity.adapter.setOnitemClickListener(new ProjectAdapter.OnitemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-
+                                Intent intent = new Intent(activity.getActivity(), LevelProjectActivity.class);
+                                String id = String.valueOf(list.get(position).getId());
+                                intent.putExtra("id",id);
+                                activity.startActivity(intent);
                             }
                         });
                         if(total != 0){

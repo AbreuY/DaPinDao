@@ -11,6 +11,6 @@ public interface ProjectInterface {
     }
     //presenter
     interface Presenter{
-        void getType1Page(int pageNum,int pageSize,String search);//一级专题
+        void getType1Page(int pageNum,int pageSize,String search,int userId);//一级专题
     }
 }

@@ -145,7 +145,7 @@ public class ProjectModel {
             private Object delFlag;
             private Object search;
             private String isRec;
-            private Object isSub;
+            private String isSub;
 
             public Object getSearchValue() {
                 return searchValue;
@@ -291,11 +291,11 @@ public class ProjectModel {
                 this.isRec = isRec;
             }
 
-            public Object getIsSub() {
+            public String getIsSub() {
                 return isSub;
             }
 
-            public void setIsSub(Object isSub) {
+            public void setIsSub(String isSub) {
                 this.isSub = isSub;
             }
 

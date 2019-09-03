@@ -17,6 +17,7 @@ import com.example.dapindao.Presenter.ProjectFragmentPresent;
 import com.example.dapindao.Presenter.ProjectPresenter;
 import com.example.dapindao.R;
 import com.example.dapindao.utils.RecyclerViewEmptySupport;
+import com.example.dapindao.utils.Utils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -38,14 +39,16 @@ public class ProjectFragment extends Fragment implements View.OnClickListener, P
     private int pageNum = 1;
     private int pageSize = 10;
     private String search = "";
+    private int UserId;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.projectfragment,container,false);
         ButterKnife.bind(this,view);
+        UserId = Utils.getShared(getActivity(),"UserId");
         initUI();
         projectPresenter = new ProjectFragmentPresent(this,this);
-        projectPresenter.getType1Page(pageNum,pageSize,search);
+        projectPresenter.getType1Page(pageNum,pageSize,search,UserId);
         return view;
     }
 
@@ -55,13 +58,13 @@ public class ProjectFragment extends Fragment implements View.OnClickListener, P
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                projectPresenter.getType1Page(pageNum,pageSize,search);
+                projectPresenter.getType1Page(pageNum,pageSize,search,UserId);
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                projectPresenter.getType1Page(pageNum++,pageSize,search);
+                projectPresenter.getType1Page(pageNum++,pageSize,search,UserId);
             }
         });
 

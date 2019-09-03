@@ -11,5 +11,6 @@ public interface MysubscriptionInterface {
     }
     //presenter
     interface Presenter{
+        void geSubProjectOnePage(int pageNum,int pageSize,int UserId);
     }
 }

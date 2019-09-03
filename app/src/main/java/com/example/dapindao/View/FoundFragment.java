@@ -79,7 +79,7 @@ public class FoundFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.lin_yaokan:
-                //订阅
+
                 intent = new Intent(getContext(),LargeWatchActivity.class);
                 startActivity(intent);
                 break;

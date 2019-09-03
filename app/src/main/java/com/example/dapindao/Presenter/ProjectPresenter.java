@@ -32,8 +32,8 @@ public class ProjectPresenter implements ProjectInterface.Presenter {
     }
 
     @Override
-    public void getType1Page(int pageNum, int pageSize, String search) {
-        Call<ProjectModel> call= HttpHelper.getInstance().create(DaPinDaoAPI.class).getType1Page(pageNum,pageSize,search);
+    public void getType1Page(int pageNum, int pageSize, String search,int userId) {
+        Call<ProjectModel> call= HttpHelper.getInstance().create(DaPinDaoAPI.class).getType1Page(pageNum,pageSize,search,userId);
         call.enqueue(new Callback<ProjectModel>() {
             @Override
             public void onResponse(Call<ProjectModel> call, Response<ProjectModel> response) {
@@ -51,6 +51,8 @@ public class ProjectPresenter implements ProjectInterface.Presenter {
                             public void onItemClick(View view, int position) {
                                 Log.e("TAG", "onItemClick: "+list.get(position).getId() );
                                 Intent intent = new Intent(activity, LevelProjectActivity.class);
+                                String id = String.valueOf(list.get(position).getId());
+                                intent.putExtra("id",id);
                                 activity.startActivity(intent);
                             }
                         });

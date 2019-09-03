@@ -38,22 +38,52 @@
 
     </TextView>
 
-    <FrameLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/fl_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         >
 
-        <com.example.dapindao.utils.RecyclerViewEmptySupport
-            android:id="@+id/recyclerView"
-            android:elevation="4dp"
+        <TextView
+            android:id="@+id/conment_tv"
+            android:background="@color/white"
+            android:paddingLeft="20dp"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="相关评论"
+            />
+
+        <LinearLayout
+            android:id="@+id/detail_page_comment_container"
+            android:layout_below="@+id/detail_page_above_container"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never"
-            android:background="@color/white"/>
+            android:orientation="vertical">
+            <ScrollView
+                android:layout_above="@+id/button"
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <com.example.dapindao.View.CommentExpandableListView
+                    android:id="@+id/detail_page_lv_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:layout_marginBottom="64dp"
+                    android:listSelector="@android:color/transparent"
+                    android:scrollbars="none"/>
+            </ScrollView>
 
-    </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
     <include layout="@layout/include_news_detail_tool_bar"/>

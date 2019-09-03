@@ -1,5 +1,8 @@
 package com.example.dapindao.Presenter;
 
+import android.content.Intent;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.dapindao.API.DaPinDaoAPI;
@@ -13,6 +16,7 @@ import com.example.dapindao.Model.VideobyModel;
 import com.example.dapindao.View.AlertsFragment;
 import com.example.dapindao.View.BannerViewPager;
 import com.example.dapindao.View.FilmCriticsFragment;
+import com.example.dapindao.View.VideoDetailsActivity;
 import com.example.dapindao.retrofit.HttpHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,6 +63,11 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
                                     @Override
                                     public void onBannerClick(int position) {
                                         //点击item
+                                       Intent intent = new Intent(fragment.getContext(), VideoDetailsActivity.class);
+                                         intent.putExtra("id",response.body().getResult().getRows().get(position).getId());
+                                        intent.putExtra("secondType","3");
+                                        intent.putExtra("articleUuid",response.body().getResult().getRows().get(position).getUuid());
+                                        fragment.startActivity(intent);
                                     }
                                 });
                     }
@@ -87,12 +96,21 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
                             JsonArray jsonElements = object.getAsJsonArray("rows");
                             fragment.adapter = new FilmCriticsAdapter(fragment.getContext(),jsonElements);
                             fragment.recyclerView.setAdapter(fragment.adapter);
+                            fragment.adapter.setOnitemClickListener(new FilmCriticsAdapter.OnitemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    JsonObject object1 = jsonElements.get(position).getAsJsonObject();
+                                    Log.e("id", "onItemClick: "+object1.get("id").getAsString());
+                                    Intent intent = new Intent(fragment.getContext(), VideoDetailsActivity.class);
+                                    intent.putExtra("id",object1.get("id").getAsString());
+                                    fragment.startActivity(intent);
+                                }
+                            });
                             int total = object.get("total").getAsInt();
                             int totalPage = object.get("totalPage").getAsInt();
                             if(total != 0){
                                 view.onRefresh();
                             }else {
-                                // publicCue.loadAdapter(beanList);
                                 view.failed();
                             }
                             if(totalPage>pageNum){

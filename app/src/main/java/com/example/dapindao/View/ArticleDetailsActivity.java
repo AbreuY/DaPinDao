@@ -104,7 +104,6 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
     private String articleUuid;//文章、视频、快讯的uuid
     private int articleUserId;//文章所属作者的用户id
     private String articleTitle;//标题
-    private String content;//内容
     private String avatarPath;//头像地址
     private String UserName;//个人昵称
     private String token;
@@ -112,6 +111,8 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
     private int pageSize = 10;
     private int totalPage;
     private String articleUuids;
+    private String articleImgPath;
+    private int toUserName;
 
 
     @Override
@@ -121,8 +122,9 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
         intent = getIntent();
         UserId = Utils.getShared(getApplicationContext(),"UserId");
         ButterKnife.bind(this);
-        bt_comment.setOnClickListener(this);
+
         mIvBack.setOnClickListener(this);
+        bt_comment.setOnClickListener(this);
         comments_btn.setOnClickListener(this);
         initUI();
         initData();
@@ -161,6 +163,7 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
                         articleUuid = response.body().getArticle().getUuid();
                         articleUserId = response.body().getArticle().getUserId();
                         articleTitle = response.body().getArticle().getTitle();
+                        articleImgPath = response.body().getArticle().getImgPath();
                         comments.setText(""+model.getCommentResult().getTotal());
                         totalPage = model.getCommentResult().getTotalPage();
                         title_Tv.setText(model.getArticle().getTitle());
@@ -358,7 +361,7 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
 
                     //commentOnWork(commentContent);
                     dialog.dismiss();
-                    Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).saveComment(token,"1","1",articleUuid,articleUserId,articleTitle,commentContent,null);
+                    Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).saveComment(token,"1","1",articleUuid,articleUserId,articleTitle,articleImgPath,commentContent,null,toUserName,null);
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -434,7 +437,7 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
                 String replyContent = commentText.getText().toString().trim();
                 if(!TextUtils.isEmpty(replyContent)){
                     dialog.dismiss();
-                    Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).saveComment(token,"2","1",articleUuid,articleUserId,articleTitle,replyContent,oneCommentId);
+                    Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).saveComment(token,"2","1",articleUuid,articleUserId,articleTitle,articleImgPath,replyContent,null,toUserName,oneCommentId);
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response){

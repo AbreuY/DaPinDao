@@ -87,7 +87,8 @@ public interface DaPinDaoAPI {
     Call<ProjectModel> getType1Page(
             @Query("pageNum") int pageNum,
             @Query("pageSize") int pageSize,
-            @Query("search") String search
+            @Query("search") String search,
+            @Query("userId") int userId
     );
     //热榜
     @POST("/api/app/front/recFront")
@@ -98,9 +99,13 @@ public interface DaPinDaoAPI {
     );
 
     //视频详情
+
     @POST("/api/common/vedioes/getVedioesDetail")
     Call<VedioesDetailModel> getVedioesDetail(
-            @Query("id") String id
+            @Query("id") String id,
+            @Query("articleUuid") String articleUuid,
+            @Query("pageSize") int pageSize,
+            @Query("loginUserId") int loginUserId
     );
 
     //视频轮播图、
@@ -136,7 +141,10 @@ public interface DaPinDaoAPI {
             @Query("articleUuid") String articleUuid,
             @Query("articleUserId") int articleUserId,
             @Query("articleTitle") String articleTitle,
+            @Query("articleImgPath") String articleImgPath,
             @Query("content") String content,
+            @Query("toUserId") String toUserId,
+            @Query("toUserName")int toUserName,
             @Query("oneCommentId") String oneCommentId
 
     );
@@ -172,6 +180,31 @@ public interface DaPinDaoAPI {
             @Query("pageSize") int pageSize,
             @Query("articleUuid") String articleUuid
     );
+    //订阅
+    @POST("/api/common/project/subProjectTypeTwo")
+    Call<ResponseBody> subProjectOne(
+            @Header("Authorization") String Authorization,
+            @Query("projectId") int projectId,
+            @Query("type") String type
+
+    );
+    //二级专题
+    @POST("/api/common/project/getAllType2")
+    Call<ResponseBody> getAllType2(
+            @Query("type1Id") int type1Id
+    );
+
+    //我的订阅
+    @POST("/api/common/project/geSubProjectOnePage")
+    Call<ResponseBody> geSubProjectOnePage(
+            @Header("Authorization") String Authorization,
+            @Query("pageNum") int pageNum,
+            @Query("pageSize") int pageSize,
+            @Query("userId") int userId
+
+    );
+
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.example.dapindao.View;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -13,6 +14,7 @@ import com.example.dapindao.Presenter.ProjectPresenter;
 import com.example.dapindao.R;
 import com.example.dapindao.utils.BaseActivity;
 import com.example.dapindao.utils.RecyclerViewEmptySupport;
+import com.example.dapindao.utils.Utils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -35,6 +37,7 @@ public class ProjectActivity extends BaseActivity implements View.OnClickListene
     private int pageNum = 1;
     private int pageSize = 10;
     private String search = "";
+    private int userId;
 
 
 
@@ -43,10 +46,12 @@ public class ProjectActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.project);
         ButterKnife.bind(this);
+        userId = Utils.getShared(getApplicationContext(),"UserId");
+        Log.e("TAG", "onCreate: "+userId);
         initUI();
         initEvetn();
         projectPresenter = new ProjectPresenter(this,this);
-        projectPresenter.getType1Page(pageNum,pageSize,search);
+        projectPresenter.getType1Page(pageNum,pageSize,search,userId);
 
     }
     private void initUI(){
@@ -55,13 +60,13 @@ public class ProjectActivity extends BaseActivity implements View.OnClickListene
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                projectPresenter.getType1Page(pageNum,pageSize,search);
+                projectPresenter.getType1Page(pageNum,pageSize,search,userId);
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-                projectPresenter.getType1Page(pageNum++,pageSize,search);
+                projectPresenter.getType1Page(pageNum++,pageSize,search,userId);
             }
         });
 
