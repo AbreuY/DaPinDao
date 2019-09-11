@@ -37,6 +37,10 @@
         <item name="actionMenuTextColor">@color/white</item> <!--  敲定颜色-->
         <item name="android:textSize">18sp</item> <!--  搞掂字体大小-->
     </style>
+    <style name="ToolbarTheme1" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="actionMenuTextColor">@color/actioncolor</item> <!--  敲定颜色-->
+        <item name="android:textSize">18sp</item> <!--  搞掂字体大小-->
+    </style>
     <style name="TextAppearanceHome" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">16sp</item>
     </style>
@@ -64,6 +68,14 @@
             @android:drawable/progress_indeterminate_horizontal
         </item>
         <item name="android:progressDrawable">@drawable/shape_progressbar_mini</item>
+    </style>
+    <style name="show_notice" parent="android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
     </style>
 
 </resources>

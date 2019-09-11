@@ -44,7 +44,7 @@ public class LargeWatchFragment extends Fragment implements AlertsInterface.View
         view = inflater.inflate(R.layout.largewatchfragment,container,false);
         ButterKnife.bind(this,view);
         initUI();
-        presenter = new LargeWatchPresenter(this,this);
+        presenter = new LargeWatchPresenter(getActivity(),this,adapter,recyclerView);
         presenter.recFront(7,pagenum,pagesize);
         return view;
     }

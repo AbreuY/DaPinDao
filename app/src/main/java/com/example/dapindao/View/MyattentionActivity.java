@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.dapindao.Adapter.MyattentionAdapter;
 import com.example.dapindao.Interface.MyattentionInterface;
+import com.example.dapindao.Presenter.MyattentionPresenter;
 import com.example.dapindao.R;
 import com.example.dapindao.utils.BaseActivity;
 import com.example.dapindao.utils.RecyclerViewEmptySupport;
@@ -29,7 +30,10 @@ public class MyattentionActivity extends BaseActivity implements View.OnClickLis
     @BindView(R.id.recyclerView)
     public RecyclerViewEmptySupport recyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-    private MyattentionAdapter adapter;
+    private MyattentionPresenter presenter;
+    private int PageNum = 1;
+    private int PageSize = 10;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +45,9 @@ public class MyattentionActivity extends BaseActivity implements View.OnClickLis
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         initUI();
         initEvetn();
-        adapter = new MyattentionAdapter(getApplicationContext());
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        presenter = new MyattentionPresenter(this,this,recyclerView);
+        presenter.queryUserFansList("1",PageNum,PageSize);
+
 
 
     }

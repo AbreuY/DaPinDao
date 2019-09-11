@@ -49,7 +49,7 @@ public class FilmCriticsFragment extends Fragment implements AlertsInterface.Vie
         view = inflater.inflate(R.layout.filmcritics,container,false);
         ButterKnife.bind(this,view);
         initUI();
-        presenter = new FilmCriticsPresenter(this,this);
+        presenter = new FilmCriticsPresenter(getActivity(),banner,adapter,recyclerView,this);
         presenter.queryVedioesIsRecAll();
         presenter.recFront(6,pagenum,pagesize);
 

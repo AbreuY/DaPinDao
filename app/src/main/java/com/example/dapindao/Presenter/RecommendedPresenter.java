@@ -111,10 +111,10 @@ public class RecommendedPresenter implements RecommendedInterface.Presenter {
                                         articleAdapters.setOnitemClickListener(new TheArticleAdapters.OnitemClickListener() {
                                             @Override
                                             public void onItemClick(View view, int position) {
-                                       /*         JsonObject objects =jsonElements.get(position).getAsJsonObject();
+                                                JsonObject objects =jsonlist.get(position).getAsJsonObject();
                                                 Intent intent = new Intent(fragment.getContext(), ArticleDetailsActivity.class);
                                                 intent.putExtra("articleId",objects.get("id").getAsString());
-                                                fragment.startActivity(intent);*/
+                                                fragment.startActivity(intent);
                                             }
                                         });
                                     }

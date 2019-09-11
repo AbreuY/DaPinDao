@@ -173,6 +173,7 @@ public class UserModel {
         private String isFirstBindWX;
         private String isFirstUpdateInfo;
         private int balance;
+        private long fansNum;
         private String isShuiYin;
         private Object intro;
         private String isCheck;
@@ -355,6 +356,14 @@ public class UserModel {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+
+        public long getFansNum() {
+            return fansNum;
+        }
+
+        public void setFansNum(long fansNum) {
+            this.fansNum = fansNum;
         }
 
         public String getSalt() {

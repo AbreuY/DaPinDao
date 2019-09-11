@@ -1,13 +1,18 @@
 package com.example.dapindao.Presenter;
 
+import android.content.Intent;
+import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dapindao.API.DaPinDaoAPI;
 import com.example.dapindao.Adapter.HotListAdapter;
 import com.example.dapindao.Interface.HotListInterface;
 import com.example.dapindao.Model.HotListModel;
+import com.example.dapindao.View.ArticleDetailsActivity;
 import com.example.dapindao.View.HotListFragment;
 import com.example.dapindao.retrofit.HttpHelper;
+import com.example.dapindao.utils.RelativeDateFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -44,6 +49,19 @@ public class HotListPresenter implements HotListInterface.Presenter{
                                 fragment.adapter = new HotListAdapter(fragment.getContext(),jsonElements);
                                 fragment.recyclerView.setAdapter(fragment.adapter);
                                 fragment.adapter.notifyDataSetChanged();
+                                fragment.adapter.setOnitemClickListener(new HotListAdapter.OnitemClickListener() {
+                                    @Override
+                                    public void onItemClick(View view, int position) {
+                                        JsonObject objects =jsonElements.get(position).getAsJsonObject();
+                                        String element =objects.get("element").getAsString();
+                                        String[] split = element.split(":::");
+                                        Intent intent = new Intent(fragment.getContext(), ArticleDetailsActivity.class);
+                                        intent.putExtra("articleId",split[0]);
+                                        fragment.startActivity(intent);
+
+
+                                    }
+                                });
                                 view.failed();
                             }else {
                                 Toast.makeText(fragment.getContext(),"16小时热榜无数据",Toast.LENGTH_LONG).show();

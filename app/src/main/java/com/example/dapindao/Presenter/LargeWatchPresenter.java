@@ -1,5 +1,6 @@
 package com.example.dapindao.Presenter;
 
+import android.content.Context;
 import android.widget.Toast;
 
 import com.example.dapindao.API.DaPinDaoAPI;
@@ -13,6 +14,7 @@ import com.example.dapindao.View.AlertsFragment;
 import com.example.dapindao.View.FilmCriticsFragment;
 import com.example.dapindao.View.LargeWatchFragment;
 import com.example.dapindao.retrofit.HttpHelper;
+import com.example.dapindao.utils.RecyclerViewEmptySupport;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -25,10 +27,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LargeWatchPresenter implements AlertsInterface.Presenter{
-    private LargeWatchFragment fragment;
     private AlertsInterface.View view;
-    public LargeWatchPresenter(LargeWatchFragment fragment,AlertsInterface.View view){
-        this.fragment = fragment;
+    private  RecyclerViewEmptySupport recyclerView;
+    private LargeWatchAdapter adapter;
+    private Context context;
+    public LargeWatchPresenter(Context context, AlertsInterface.View view, LargeWatchAdapter adapter, RecyclerViewEmptySupport recyclerViewEmptySupport){
+        this.context = context;
+        this.adapter = adapter;
+        this.recyclerView = recyclerViewEmptySupport;
         this.view = view;
     }
 
@@ -46,8 +52,8 @@ public class LargeWatchPresenter implements AlertsInterface.Presenter{
                         if(jsonObject.get("code").getAsInt() == 0){
                             JsonObject object = jsonObject.get("result").getAsJsonObject();
                             JsonArray jsonElements = object.getAsJsonArray("rows");
-                            fragment.adapter = new LargeWatchAdapter(fragment.getContext(),jsonElements);
-                            fragment.recyclerView.setAdapter(fragment.adapter);
+                            adapter = new LargeWatchAdapter(context,jsonElements);
+                            recyclerView.setAdapter(adapter);
                             int total = object.get("total").getAsInt();
                             int totalPage = object.get("totalPage").getAsInt();
                             if(total != 0){
@@ -64,7 +70,7 @@ public class LargeWatchPresenter implements AlertsInterface.Presenter{
                             }
 
                         }else {
-                            Toast.makeText(fragment.getContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -75,7 +81,7 @@ public class LargeWatchPresenter implements AlertsInterface.Presenter{
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(fragment.getContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(context,t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }

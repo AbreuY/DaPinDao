@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,8 @@ import com.example.dapindao.retrofit.HttpHelper;
 import com.example.dapindao.utils.BaseActivity;
 import com.example.dapindao.utils.MyBottomSheetDialog;
 import com.example.dapindao.utils.Utils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.devio.takephoto.app.TakePhoto;
@@ -37,12 +40,14 @@ import org.devio.takephoto.permission.PermissionManager;
 import org.devio.takephoto.permission.TakePhotoInvocationHandler;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +62,8 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
     private File file;
     @BindView(R.id.roundedImageView)
     RoundedImageView roundedImageView;
+    @BindView(R.id.Introduction)
+    EditText Introduction;//个人简介
     public InvokeParam invokeParam;
     private String token;
     private String avatarPath;//头像地址
@@ -64,6 +71,11 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
     TextView userName;//个人昵称
     @BindView(R.id.userName_btn)
     RelativeLayout userName_btn;//设置个人昵称
+    @BindView(R.id.certification_lin)
+    RelativeLayout certification_lin;//身份认证
+    @BindView(R.id.isAuth)
+            TextView isAuth;//是否认证
+    private String isAuths;
     int REQUEST_CODE = 0;
     Intent intent;
     @Override
@@ -73,10 +85,33 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.personalcenter);
         token = Utils.getShared2(getApplicationContext(),"token");
         avatarPath =  Utils.getShared2(getApplicationContext(),"avatarPath");
+        isAuths = Utils.getShared2(getApplicationContext(),"isAuth");
         ButterKnife.bind(this);
+        initUI();
         initEvent();
         initData();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initUI();
+    }
+
+    private void initUI(){
+        if(isAuths.equals("0")){
+            isAuth.setText("未认证");
+            certification_lin.setEnabled(true);
+        }
+        if(isAuths.equals("1")){
+            isAuth.setText("已认证");
+            certification_lin.setEnabled(false);
+        }
+        if(isAuths.equals("2")){
+            isAuth.setText("审核中");
+            certification_lin.setEnabled(false);
+        }
     }
     private void initData(){
         if(avatarPath.equals("")){
@@ -94,6 +129,7 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
         back.setOnClickListener(this);
         take_photo.setOnClickListener(this);
         userName_btn.setOnClickListener(this);
+        certification_lin.setOnClickListener(this);
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -124,7 +160,34 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
     public void onClick(View view) {
 
         if(view == back){
-            finish();
+            Call<ResponseBody> call2 = HttpHelper.getInstance().create(DaPinDaoAPI.class).updateBasicInfo(DapinDaoApp.getToken(),"",Introduction.getText().toString(),"");
+            call2.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.body()!=null){
+                        String jsonStr = null;//把原始数据转为字符串
+                        try {
+                            jsonStr = new String(response.body().bytes());
+                            JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                            if(jsonObject.get("code").getAsInt() == 0){
+                                DapinDaoApp.LoadUserModel(DapinDaoApp.getToken());
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                                finish();
+                            }else {
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
         }
         if(view == take_photo){
             //头像
@@ -140,7 +203,6 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
             TextView cancel_btn = (TextView) box_view.findViewById(R.id.cancel_btn);
             View.OnClickListener listener = new View.OnClickListener() {
                 public void onClick(View v) {
-
                     File file = new File(getExternalCacheDir(), System.currentTimeMillis() + ".png");
                     Uri uri = Uri.fromFile(file);
                     int size = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
@@ -175,6 +237,11 @@ public class PersonalCenterActivity extends BaseActivity implements View.OnClick
             intent.putExtra("username",userName.getText().toString());
             startActivityForResult(intent, REQUEST_CODE);
 
+        }
+
+        if(view == certification_lin){
+            intent = new Intent(getApplicationContext(),CertificationActivity.class);
+            startActivity(intent);
         }
     }
 

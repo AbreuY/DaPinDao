@@ -11,11 +11,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.example.dapindao.Adapter.LargeWatchAdapter;
 import com.example.dapindao.Adapter.VideoListAdapter;
+import com.example.dapindao.Interface.AlertsInterface;
+import com.example.dapindao.Presenter.LargeWatchPresenter;
 import com.example.dapindao.R;
 import com.example.dapindao.utils.BaseActivity;
 import com.example.dapindao.utils.RecyclerViewEmptySupport;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdStd;
 
-public class LargeWatchActivity extends BaseActivity implements View.OnClickListener {
+public class LargeWatchActivity extends BaseActivity implements View.OnClickListener, AlertsInterface.View {
 
     @BindView(R.id.back)
      ImageView back;
@@ -35,8 +42,10 @@ public class LargeWatchActivity extends BaseActivity implements View.OnClickList
     @BindView(R.id.recyclerView)
     public RecyclerViewEmptySupport recyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-    protected VideoListAdapter mNewsAdapter;
-    private Jzvd.JZAutoFullscreenListener mSensorEventListener;
+    public LargeWatchAdapter adapter;
+    private LargeWatchPresenter presenter;
+    int pagenum = 1;
+    int pagesize = 10;
     private SensorManager mSensorManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,17 +58,29 @@ public class LargeWatchActivity extends BaseActivity implements View.OnClickList
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         initUI();
         initEvent();
-        loaddata();
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mSensorEventListener = new Jzvd.JZAutoFullscreenListener();
-        mNewsAdapter = new VideoListAdapter(getApplicationContext());
-        recyclerView.setAdapter(mNewsAdapter);
+        presenter = new LargeWatchPresenter(LargeWatchActivity.this,this,adapter,recyclerView);
+        presenter.recFront(7,pagenum,pagesize);
     }
     private void initUI(){
         mLinearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLinearLayoutManager);
-        refreshLayout.setEnableRefresh(true);
-        refreshLayout.setEnableLoadMore(false);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                presenter.recFront(7,pagenum,pagesize);
+                JzvdStd.goOnPlayOnPause();
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                presenter.recFront(7,pagenum++,pagesize);
+                JzvdStd.goOnPlayOnPause();
+            }
+        });
+
+
 
     }
 
@@ -69,9 +90,6 @@ public class LargeWatchActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void init() {
-
-    }
-    private void loaddata(){
 
     }
 
@@ -87,13 +105,42 @@ public class LargeWatchActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(mSensorEventListener);
-        Jzvd.releaseAllVideos();
+        JzvdStd.goOnPlayOnPause();
     }
     @Override
     protected void onResume() {
         super.onResume();
-        Sensor accelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(mSensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        JzvdStd.goOnPlayOnResume();
+    }
+
+    @Override
+    public void succeed() {
+
+    }
+
+    @Override
+    public void failed() {
+        refreshLayout.finishRefresh(true);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRefresh() {
+        refreshLayout.finishRefresh();//结束刷新
+    }
+
+    @Override
+    public void onLoadMore() {
+        adapter.notifyDataSetChanged();
+        refreshLayout.finishLoadMore(true);
+    }
+
+
+
+
+    @Override
+    public void onNothingData() {
+        //没有更多数据了
+        refreshLayout.finishLoadMoreWithNoMoreData();
     }
 }

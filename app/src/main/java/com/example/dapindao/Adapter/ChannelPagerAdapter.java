@@ -26,6 +26,7 @@ public class ChannelPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         mFragments = fragmentList != null ? fragmentList : new ArrayList<>();
         mChannels = channelList != null ? channelList : new ArrayList<>();
+
     }
 
     @Override

@@ -9,6 +9,21 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+        manifestPlaceholders = [
+                JPUSH_APPKEY : "204bbca08d04f31362f77b70",//值来自开发者平台取得的AppKey
+                JPUSH_CHANNEL: "default_developer",
+        ]
+
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
     buildTypes {
         release {
@@ -82,8 +97,16 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     implementation 'com.sina.weibo.sdk:core:4.4.1:openDefaultRelease@aar'
     implementation 'com.jaeger.statusbarutil:library:1.4.0'
-    implementation "androidx.tonyodev.fetch2:xfetch2:3.1.4"
-    implementation "androidx.tonyodev.fetch2okhttp:xfetch2okhttp:3.1.4"
-    implementation "com.github.chrisbanes:PhotoView:2.0.0@aar"
-    implementation "com.github.nukc.stateview:library:1.2.1@aar"
+    implementation 'androidx.tonyodev.fetch2:xfetch2:3.1.4'
+    implementation 'androidx.tonyodev.fetch2okhttp:xfetch2okhttp:3.1.4'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0@aar'
+    implementation 'com.github.nukc.stateview:library:1.2.1@aar'
+    implementation 'com.zhy:okhttputils:2.4.1'
+    implementation files('libs/jcore-android-2.1.2.jar')
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    implementation 'com.github.sendtion:XRichText:1.9.1'
+    //知乎图片选择 https://github.com/zhihu/Matisse
+    implementation 'com.zhihu.android:matisse:0.5.2-beta4'
+    implementation files('libs/jsoup-1.12.1.jar')
+    implementation 'com.github.yoyoyaobin:PreventKeyboardBlockUtil:1.0.7'
 }

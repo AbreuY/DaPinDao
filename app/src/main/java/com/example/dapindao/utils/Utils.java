@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -79,6 +80,9 @@ public class Utils {
         SharedPreferences preferences = context.getSharedPreferences("ShareData", Context.MODE_PRIVATE);
         return preferences.getInt(key, 0);
     }
+
+
+
     public static String getString(int resId) {
         return getResource().getString(resId);
     }
@@ -110,6 +114,11 @@ public class Utils {
     }
 
     public static void setShare2(Context context, String key, String value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences("ShareData", Context.MODE_PRIVATE).edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+    public static void setShare5(Context context, String key, String value) {
         SharedPreferences.Editor editor = context.getSharedPreferences("ShareData", Context.MODE_PRIVATE).edit();
         editor.putString(key, value);
         editor.commit();
@@ -320,14 +329,21 @@ public class Utils {
     public static String getPackageName() {
         return getContext().getPackageName();
     }
-    public static String stampToDate1(String s){
+    /**
+     * 字符串转换成日期
+     * @param str
+     * @return date
+     */
+    public static Date StrToDate(String str) {
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        String date=simpleDateFormat.format(new Date());
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return date;
-
     }
     public static String listToString(List<String> mList) {
         String convertedListStr = "";

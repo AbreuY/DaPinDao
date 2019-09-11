@@ -17,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.dapindao.Adapter.Adapter;
 import com.example.dapindao.Adapter.ChannelPagerAdapter;
+import com.example.dapindao.App.DapinDaoApp;
 import com.example.dapindao.Interface.OnChannelListener;
 import com.example.dapindao.Model.Channel;
 import com.example.dapindao.R;
@@ -68,6 +69,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnCh
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     /**
      * 初始化已选频道和未选频道的数据
      */
@@ -96,8 +102,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnCh
             }.getType());
             mSelectedChannels.addAll(selectedChannel);
             mUnSelectedChannels.addAll(unselectedChannel);
-            Log.e("TAG", "initChannelData: "+ mSelectedChannels.size());
-            Log.e("TAG", "initChannelData: "+ mUnSelectedChannels.size());
         }
     }
     /**
@@ -192,9 +196,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnCh
                  mFragments.add(documentaryFragment);
              }
 
+
          }
-        Log.e("TAG", "initChannelFragments: "+mSelectedChannels.size() );
-        Log.e("TAG", "initChannelFragments11: "+mFragments.size() );
 
     }
 
@@ -374,10 +377,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnCh
             if(channel.channelCode.equals("documentary")){
                 DocumentaryFragment documentaryFragment= new DocumentaryFragment();
                 mFragments.add(documentaryFragment);
-
             }
-
-
+        mChannelPagerAdapter.notifyDataSetChanged();
 
 
 
@@ -388,6 +389,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnCh
         //移动到推荐频道
         mUnSelectedChannels.add(endPos, mSelectedChannels.remove(starPos));
         mFragments.remove(starPos);
+    mChannelPagerAdapter.notifyDataSetChanged();
 
 
     }

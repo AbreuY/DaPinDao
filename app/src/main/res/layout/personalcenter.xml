@@ -139,6 +139,7 @@
                 />
             
             <EditText
+                android:id="@+id/Introduction"
                 android:paddingTop="10dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
@@ -229,22 +230,24 @@
                 android:background="#F9F9F9"
                 />
             <RelativeLayout
+                android:id="@+id/certification_lin"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
                     android:layout_marginLeft="21dp"
                     android:layout_centerVertical="true"
-                    android:text="身 份"
+                    android:text="身 份 认 证"
                     android:textSize="14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     />
                 <TextView
+                    android:id="@+id/isAuth"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="30dp"
                     android:textColor="#AAAAAA"
-                    android:text="个人"
+                    android:text="未认证"
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

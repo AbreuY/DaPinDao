@@ -150,7 +150,8 @@ public class ChannelAdapter extends BaseMultiItemQuickAdapter<Channel, BaseViewH
 
                                 if (onChannelDragListener != null)
                                     onChannelDragListener.onMoveToOtherChannel(currentPosition, otherFirstPosition - 1);
-                                startAnimation(currentView, targetX, targetY);
+
+                                //startAnimation(currentView, targetX, targetY);
                             } else {
                                 channel.setItemType(Channel.TYPE_OTHER_CHANNEL);//改为推荐频道类型
                                 if (otherFirstPosition == -1) otherFirstPosition = mData.size();
@@ -199,7 +200,7 @@ public class ChannelAdapter extends BaseMultiItemQuickAdapter<Channel, BaseViewH
                                     channel.setItemType(Channel.TYPE_MY_CHANNEL);//改为推荐频道类型
                                     if (onChannelDragListener != null)
                                         onChannelDragListener.onMoveToMyChannel(currentPosition, myLastPosition + 1);
-                                    startAnimation(currentView, targetX, targetY);
+                                       // startAnimation(currentView, targetX, targetY);
                                 } else {
                                     channel.setItemType(Channel.TYPE_MY_CHANNEL);//改为推荐频道类型
                                     if (myLastPosition == -1) myLastPosition = 0;//我的频道没有了，改成0

@@ -21,7 +21,7 @@ public class Constants {
     public static final String CHANNEL_CODE = "channelCode";
 
     public static String SERVER_URL = "http://api.dapindao.com";
-    //public static String SERVER_URL="http://192.168.1.109:8080";
+    //public static String SERVER_URL="http://192.168.1.109:80";
     public static long DEFAULT_TIMEOUT = 10000;
 
     public static final String MESSAGE_RECEIVED_ACTION = "jpush.MESSAGE_RECEIVED_ACTION";

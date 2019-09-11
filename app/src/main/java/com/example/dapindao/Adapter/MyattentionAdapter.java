@@ -1,29 +1,41 @@
 package com.example.dapindao.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.dapindao.Model.HotListModel;
+import com.example.dapindao.Model.RecommendedModel;
 import com.example.dapindao.R;
+import com.example.dapindao.utils.MyJZVideoPlayerStandard;
+import com.example.dapindao.utils.RelativeDateFormat;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import cn.jzvd.JzvdStd;
 
 public class MyattentionAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 
     public static final int VIEW_TYPE_ITEM = 1;
     public static final int VIEW_TYPE_EMPTY = 0;
     private Context context;
-    //private List<CouponModel.DataBean> couponVoListBeans;
-    public MyattentionAdapter(Context context){
+    private JsonArray model;
+    public MyattentionAdapter(Context context,JsonArray model){
         this.context = context;
-        //this.couponVoListBeans = couponVoListBeans;
+        this.model = model;
     }
 
     private OnitemClickListener onitemClickListener=null;
@@ -49,19 +61,10 @@ public class MyattentionAdapter extends RecyclerView.Adapter implements View.OnC
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if(viewHolder instanceof BodyViewHolder){
-
-           /* if(couponVoListBeans.get(i).getCoupon_type() == 0){
-                ((BodyViewHolder) viewHolder).type.setText("满减券");
-                ((BodyViewHolder) viewHolder).Couponamount_tv.setText("¥"+couponVoListBeans.get(i).getType_money());
-            }
-            if(couponVoListBeans.get(i).getCoupon_type() == 1){
-                ((BodyViewHolder) viewHolder).type.setText("折扣券");
-                ((BodyViewHolder) viewHolder).Couponamount_tv.setText("¥"+couponVoListBeans.get(i).getDiscount());
-            }
-            ((BodyViewHolder) viewHolder).PreferentialPremises_tv.setText(couponVoListBeans.get(i).getName());
-            ((BodyViewHolder) viewHolder).Use_btn.setVisibility(View.GONE);
-            ((BodyViewHolder) viewHolder).Termvalidity_tv.setText(Utils.stampToDate1(couponVoListBeans.get(i).getUse_start_date())+"-"+Utils.stampToDate1(couponVoListBeans.get(i).getUse_end_date()));*/
-
+            JsonObject object =model.get(i).getAsJsonObject();
+            JsonObject mainUser = object.getAsJsonObject("mainUser");
+            ((BodyViewHolder) viewHolder).userName.setText(mainUser.get("userName").getAsString());
+            Glide.with(context).load(mainUser.get("avatarpath").getAsString()).into(((BodyViewHolder) viewHolder).avatarpath);
 
         }
         viewHolder.itemView.setTag(i);
@@ -69,11 +72,10 @@ public class MyattentionAdapter extends RecyclerView.Adapter implements View.OnC
 
     @Override
     public int getItemCount() {
-     /*   if (couponVoListBeans.size() == 0) {
+        if (model.size() == 0) {
             return 1;
         }
-        return couponVoListBeans.size();*/
-     return 20;
+        return model.size();
     }
 
     /**
@@ -86,12 +88,10 @@ public class MyattentionAdapter extends RecyclerView.Adapter implements View.OnC
     public int getItemViewType(int position) {
         //如果是0，就是头，否则则是其他的item
 
-     /*   if (couponVoListBeans.size() == 0) {
+        if (model.size() == 0) {
             return VIEW_TYPE_EMPTY;
         }
         //如果有数据，则使用ITEM的布局
-        return VIEW_TYPE_ITEM;*/
-
         return VIEW_TYPE_ITEM;
     }
 
@@ -117,14 +117,16 @@ public class MyattentionAdapter extends RecyclerView.Adapter implements View.OnC
      */
     public class BodyViewHolder extends RecyclerView.ViewHolder {
 
-        private RoundedImageView roundedImageView;
-        private TextView name;
+        private RoundedImageView avatarpath;
+        private TextView userName;
+
 
 
         public BodyViewHolder(View itemView) {
             super(itemView);
-            roundedImageView = (RoundedImageView)itemView.findViewById(R.id.roundedImageView);
-            name = (TextView) itemView.findViewById(R.id.name);
+            avatarpath = (RoundedImageView) itemView.findViewById(R.id.avatarpath);
+            userName = (TextView) itemView.findViewById(R.id.userName);
+
         }
 
     }

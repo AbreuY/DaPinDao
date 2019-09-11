@@ -76,15 +76,46 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <ImageView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/praise_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:paddingLeft="5dip"
-            android:scaleType="center"
-            android:src="@mipmap/praise1"/>
+            android:scaleType="center" >
+
+            <ImageView
+                android:id="@+id/praise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@mipmap/praise1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/likeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/bg"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/praise"
+                app:layout_constraintEnd_toEndOf="@+id/praise"
+                app:layout_constraintStart_toStartOf="@+id/praise"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <ImageView
+            android:id="@+id/Collect"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"

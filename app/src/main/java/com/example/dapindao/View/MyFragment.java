@@ -2,6 +2,7 @@ package com.example.dapindao.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     //我的
     private View view;
     @BindView(R.id.login_btn)
-    Button login_btn;//登录按钮
+    TextView login_btn;//登录按钮
     @BindView(R.id.regist_btn)
-    Button regist_btn;
+    TextView regist_btn;
     Intent intent;
     @BindView(R.id.messagecenter)
     LinearLayout messagecenter;//消息中心
@@ -61,20 +62,41 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.setting_btn)
     ImageView setting_btn;//设置
     @BindView(R.id.Personalcenter)
-    TextView Personalcenter;//个人中心
+    ImageView Personalcenter;//个人中心
     @BindView(R.id.roundedImageView)
     RoundedImageView roundedImageView;
     private String avatarPath;//头像地址
     @BindView(R.id.userName)
     TextView userName;//用户昵称
+    @BindView(R.id.Introduction)
+    TextView Introduction;//个人简介
+    private int redEnvelope;//红包
+    private int articleNum;//发文数量
+    private String fansNum;//粉丝
+    private int balance;//金币
+    @BindView(R.id.redEnvelope_tv)
+    TextView redEnvelope_tv;
+    @BindView(R.id.articleNum_tv)
+    TextView articleNum_tv;
+    @BindView(R.id.fansNum_tv)
+    TextView fansNum_tv;
+    @BindView(R.id.balance_tv)
+    TextView balance_tv;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.mypage,container,false);
         ButterKnife.bind(this,view);
-        token= Utils.getShared2(getActivity(),"token");
-        initUI();
+        redEnvelope = Utils.getShared(getActivity(),"redEnvelope");
+        articleNum = Utils.getShared(getActivity(),"articleNum");
+        fansNum = Utils.getShared2(getActivity(),"fansNum");
+        Log.e("TAG", "onCreateView: "+fansNum );
+        balance = Utils.getShared(getActivity(),"balance");
+        redEnvelope_tv.setText(""+redEnvelope);
+        articleNum_tv.setText(""+articleNum);
+        fansNum_tv.setText(""+fansNum);
+        balance_tv.setText(""+balance);
         initEvent();
         return view;
     }
@@ -82,6 +104,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        token = Utils.getShared2(getActivity(),"token");
+        initUI();
         avatarPath = Utils.getShared2(getActivity(),"avatarPath");
         if(avatarPath.equals("")){
             roundedImageView.setImageDrawable(null);
@@ -96,17 +120,26 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             userName.setText(Utils.getShared2(getActivity(),"userName"));
         }
 
+      /*  if(Utils.getShared2(getActivity(),"userName").equals("")){
+            Introduction.setText("个人简介");
+        }else {
+            Introduction.setText(Utils.getShared2(getActivity(),"userName"));
+        }
+*/
     }
 
     private void initUI(){
         if(!token.equals("")){
             constraintLayout1.setVisibility(View.GONE);
             constraintLayout2.setVisibility(View.VISIBLE);
+
         }else {
             constraintLayout1.setVisibility(View.VISIBLE);
             constraintLayout2.setVisibility(View.GONE);
         }
+
     }
+
     private void initEvent(){
         login_btn.setOnClickListener(this);
         regist_btn.setOnClickListener(this);
@@ -157,6 +190,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.Mycomments :
                 //我的评论
+                intent = new Intent(getContext(),MycommentsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.Mycollection :
                 intent = new Intent(getContext(),MycollectionActivity.class);

@@ -83,6 +83,7 @@
                         />
 
                     <CheckBox
+                        android:id="@+id/Focus_check"
                         android:gravity="center"
                         android:text="关注"
                         android:checked="false"

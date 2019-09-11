@@ -11,5 +11,6 @@ public interface MyattentionInterface {
     }
     //presenter
     interface Presenter{
+        void queryUserFansList(String type,int pagenum,int pagesize);
     }
 }

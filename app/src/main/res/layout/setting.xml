@@ -110,6 +110,7 @@
                 android:background="#F9F9F9"
                 />
             <RelativeLayout
+                android:id="@+id/clearcache"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
@@ -122,6 +123,7 @@
                     android:textColor="@color/black"
                     />
                 <TextView
+                    android:id="@+id/cache"
                     android:layout_marginRight="31dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -228,6 +230,7 @@
                 android:background="#F9F9F9"
                 />
             <RelativeLayout
+                android:id="@+id/Useragreement"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <TextView
@@ -295,6 +298,36 @@
                 android:layout_height="1dp"
                 android:background="#F9F9F9"
                 />
+            <View
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="31dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F9F9F9"
+                />
+            <RelativeLayout
+                android:id="@+id/login_out"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:layout_marginLeft="21dp"
+                    android:layout_centerVertical="true"
+                    android:text="退出登录"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+                <ImageView
+                    android:layout_marginRight="31dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="8dp"
+                    android:layout_height="17dp"
+                    android:src="@mipmap/backs"
+                    />
+
+            </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>

@@ -9,11 +9,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.dapindao.API.DaPinDaoAPI;
+import com.example.dapindao.Adapter.MycommentsAdapter;
 import com.example.dapindao.Model.UserModel;
 import com.example.dapindao.R;
 import com.example.dapindao.View.LoginActivity;
 import com.example.dapindao.retrofit.HttpHelper;
 import com.example.dapindao.utils.Utils;
+import com.example.dapindao.wxapi.WxLogin;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
@@ -28,7 +32,11 @@ import com.tonyodev.fetch2.HttpUrlConnectionDownloader;
 import com.tonyodev.fetch2core.Downloader;
 import com.tonyodev.fetch2okhttp.OkHttpDownloader;
 
+import java.io.IOException;
+
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +51,7 @@ public class DapinDaoApp extends Application {
     private static Handler mHandler;//主线程Handler
     private static String token ;
     private static int UserId;
+
     public static Context getContext() {
         return mContext;
     }
@@ -59,6 +68,9 @@ public class DapinDaoApp extends Application {
         mHandler = new Handler();
         token = Utils.getShared2(mContext,"token");
         UserId = Utils.getShared(mContext,"UserId");
+        WxLogin.initWx(this);
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
 
         final FetchConfiguration fetchConfiguration = new FetchConfiguration.Builder(this)
                 .enableRetryOnNetworkGain(true)
@@ -169,6 +181,10 @@ public class DapinDaoApp extends Application {
                         Utils.setShare2(mContext,"phonenumber",response.body().getUser().getPhonenumber());
                         Utils.setShare2(mContext,"avatarPath",response.body().getUser().getAvatarPath());
                         Utils.setShare2(mContext,"avatar",response.body().getUser().getAvatar());
+                        Utils.setShare(mContext,"redEnvelope",response.body().getUser().getRedEnvelope());
+                        Utils.setShare(mContext,"articleNum",response.body().getUser().getArticleNum());
+                        Utils.setShare(mContext,"balance",response.body().getUser().getBalance());
+                        Utils.setShare2(mContext,"fansNum", String.valueOf(response.body().getUser().getFansNum()));
 
                     }else {
                         Toast.makeText(mContext,"用户信息已过期，请重新登录！",Toast.LENGTH_LONG).show();
@@ -181,6 +197,33 @@ public class DapinDaoApp extends Application {
 
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
+                Toast.makeText(mContext,t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        Call<ResponseBody> call1 = HttpHelper.getInstance().create(DaPinDaoAPI.class).getAuthStatusData(token);
+        call1.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.body()!=null){
+                    try {
+                        String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                        JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                        if(jsonObject.get("code").getAsInt() == 0){
+                            Utils.setShare2(mContext,"isAuth",jsonObject.get("isAuth").getAsString());
+                        }else {
+                            Toast.makeText(mContext,jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(mContext,t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });

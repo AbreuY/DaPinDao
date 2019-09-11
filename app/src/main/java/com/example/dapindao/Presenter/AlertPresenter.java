@@ -1,5 +1,7 @@
 package com.example.dapindao.Presenter;
 
+import android.content.Intent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.dapindao.API.DaPinDaoAPI;
@@ -8,6 +10,7 @@ import com.example.dapindao.Adapter.HotListAdapter;
 import com.example.dapindao.Interface.AlertsInterface;
 import com.example.dapindao.Interface.HotListInterface;
 import com.example.dapindao.View.AlertsFragment;
+import com.example.dapindao.View.Alertsdetails;
 import com.example.dapindao.retrofit.HttpHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -44,6 +47,15 @@ public class AlertPresenter implements AlertsInterface.Presenter{
                             JsonArray jsonElements = object.getAsJsonArray("rows");
                             fragment.adapter = new AlertAdapter(fragment.getContext(),jsonElements);
                             fragment.recyclerView.setAdapter(fragment.adapter);
+                            fragment.adapter.setOnitemClickListener(new AlertAdapter.OnitemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    JsonObject object =jsonElements.get(position).getAsJsonObject();
+                                    Intent intent = new Intent(fragment.getContext(), Alertsdetails.class);
+                                    intent.putExtra("id",object.get("id").getAsString());
+                                    fragment.startActivity(intent);
+                                }
+                            });
                             int total = object.get("total").getAsInt();
                             int totalPage = object.get("totalPage").getAsInt();
                             if(total != 0){

@@ -2,5 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/edit_btn" android:orderInCategory="100"
-        android:title="确定"  app:showAsAction="collapseActionView|ifRoom"  />
+        android:title="发布"  app:showAsAction="collapseActionView|ifRoom"  />
 </menu>

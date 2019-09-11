@@ -63,8 +63,9 @@ public class HotListAdapter extends RecyclerView.Adapter implements View.OnClick
             for (int j =0;j<split.length;j++) {
                 ((BodyViewHolder) viewHolder).title.setText(split[1]);
                 Glide.with(context).load(split[2]).into(((BodyViewHolder) viewHolder).imgPath);
+                ((BodyViewHolder) viewHolder).reading.setText(RelativeDateFormat.format(split[3]));
             }
-            ((BodyViewHolder) viewHolder).reading.setText("阅读"+object.get("score").getAsString());
+
 
 
         }

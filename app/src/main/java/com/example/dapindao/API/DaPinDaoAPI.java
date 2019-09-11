@@ -18,6 +18,8 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -186,7 +188,6 @@ public interface DaPinDaoAPI {
             @Header("Authorization") String Authorization,
             @Query("projectId") int projectId,
             @Query("type") String type
-
     );
     //二级专题
     @POST("/api/common/project/getAllType2")
@@ -203,8 +204,153 @@ public interface DaPinDaoAPI {
             @Query("userId") int userId
 
     );
+    //快讯详情
+    @POST("/api/common/neweflash/getNewsflashDetail")
+    Call<ResponseBody> getNewsflashDetail(
+            @Query("id") String id
+    );
 
+    //文章视频点赞
+    @POST("/api/common/article/userLike")
+    Call<ResponseBody> userLike(
+            @Header("Authorization") String Authorization,
+            @Query("id") String id,
+            @Query("uuid") String uuid,
+            @Query("type") String type,
+            @Query("secondType") String secondType,
+            @Query("artUserId") int artUserId
+    );
 
+    //获取文章、咨询等当前用户是否收藏、点赞等
+    @POST("/api/common/article/getArticleIsCollectDetail")
+    Call<ResponseBody> getArticleIsCollectDetail(
+            @Header("Authorization") String Authorization,
+            @Query("uuid") String uuid,
+            @Query("firstType") String firstType,
+            @Query("secondType") String secondType
+    );
 
+    //用户收藏与取消(视频、文章、快讯、课程)
+    @POST("/api/common/article/userCollect")
+    Call<ResponseBody> userCollect(
+            @Header("Authorization") String Authorization,
+            @Query("id") String id,
+            @Query("uuid") String uuid,
+            @Query("type") String type,
+            @Query("firstType") String firstType,
+            @Query("secondType") String secondType,
+            @Query("artUserId") int artUserId
+    );
 
+    //收藏记录
+    @POST("/api/common/article/queryUserCollectPage")
+    Call<ResponseBody> queryUserCollectPage(
+            @Header("Authorization") String Authorization,
+            @Query("pageNum") int pageNum,
+            @Query("pageSize") int pageSize,
+            @Query("type") String type
+    );
+
+    //退出登录
+    @POST("/api/common/login/loginOut")
+    Call<ResponseBody> loginOut(
+            @Header("Authorization") String Authorization
+    );
+
+    //修改用户基本信息
+    @POST("/api/common/user/updateBasicInfo")
+    Call<ResponseBody> updateBasicInfo(
+            @Header("Authorization") String Authorization,
+            @Query("userName") String userName,
+            @Query("intro") String intro,
+            @Query("email") String email
+    );
+
+    //发布文章
+    @POST("/api/common/art/saveOrPublishArticle")
+    Call<ResponseBody>saveOrPublishArticle(
+            @Header("Authorization") String Authorization,
+            @Body RequestBody Body
+
+    );
+
+    //文件上传
+    @Multipart
+    @POST("/api/common/wangEditor/uploadImgToOSSAPP")
+    Call<ResponseBody>uploadImgToOSSAPP(
+            @Header("Authorization") String Authorization,
+            @Part MultipartBody.Part userHeadFile
+    );
+
+    //发现
+    @POST("/api/app/explore/mainPage")
+    Call<ResponseBody> mainPage(
+            @Query("pageSize") int pageSize
+    );
+
+    //关注
+    @POST("/api/common/userFans/attentionUser")
+    Call<ResponseBody> attentionUser(
+            @Header("Authorization") String Authorization,
+            @Query("attentionUserId") String attentionUserId
+    );
+    //取消关注
+    @POST("/api/common/userFans/deleteAttentionUser")
+    Call<ResponseBody> deleteAttentionUser(
+            @Header("Authorization") String Authorization,
+            @Query("attentionUserId") String attentionUserId
+    );
+    //查询当前用户是否关注过指定的用户
+    @POST("/api/common/userFans/judgeIsAttention")
+    Call<ResponseBody> judgeIsAttention(
+            @Header("Authorization") String Authorization,
+            @Query("attentionUserId") int attentionUserId
+    );
+
+    //获取关注或者粉丝数据
+    @POST("/api/common/userFans/queryUserFansList")
+    Call<ResponseBody> queryUserFansList(
+            @Header("Authorization") String Authorization,
+            @Query("type") String type,
+            @Query("pageNum") int pageNum,
+            @Query("pageSize") int pageSize
+    );
+
+    //分页查询文章
+    @POST("/api/common/art/queryArticlePageOwn")
+    Call<ResponseBody> queryArticlePageOwn(
+            @Header("Authorization") String Authorization,
+            @Query("pageNum") int pageNum,
+            @Query("pageSize") int pageSize
+    );
+
+    //消息通知
+    @POST("/api/common/notice/queryUserAppNoticePage")
+    Call<ResponseBody> queryUserAppNoticePage(
+            @Header("Authorization") String Authorization,
+            @Query("pageNum") int pageNum,
+            @Query("pageSize") int pageSize
+    );
+
+    //查询我的评论
+    @POST("/api/app/comment/queryOwnCommentPage")
+    Call<ResponseBody> queryOwnCommentPage(
+            @Header("Authorization") String Authorization,
+            @Query("pageNum") int pageNum,
+            @Query("pageSize") int pageSize,
+            @Query("type") String type
+    );
+
+    //查询认证状态
+    @POST("/api/common/user/getAuthStatusData")
+    Call<ResponseBody> getAuthStatusData(
+            @Header("Authorization") String Authorization
+    );
+
+    //身份认证
+    @POST("/api/common/user/submitAuth")
+    Call<ResponseBody>submitAuth(
+            @Header("Authorization") String Authorization,
+            @Body RequestBody Body
+    );
 }

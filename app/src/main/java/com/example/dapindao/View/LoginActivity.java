@@ -26,6 +26,7 @@ import com.example.dapindao.R;
 import com.example.dapindao.retrofit.Constants;
 import com.example.dapindao.utils.BaseActivity;
 import com.example.dapindao.utils.WorksSizeCheckUtil;
+import com.example.dapindao.wxapi.WxLogin;
 import com.sina.weibo.sdk.WbSdk;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
@@ -52,6 +53,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     Button button;
     @BindView(R.id.weibobtn)
     ImageView weibobtn;//微博登录
+    @BindView(R.id.weixin_login)
+    ImageView weixin_login;//微信登录
     @BindView(R.id.Get_verification_code)
     TextView Get_verification_code;
     private int type = 1;
@@ -143,6 +146,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         Get_verification_code.setOnClickListener(this);
         exit_btn.setOnClickListener(this);
         weibobtn.setOnClickListener(this);
+        weixin_login.setOnClickListener(this);
 
         //1.创建工具类对象 把要改变颜色的tv先传过去
         WorksSizeCheckUtil.textChangeListener textChangeListener = new WorksSizeCheckUtil.textChangeListener(button);
@@ -223,6 +227,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.weibobtn:
                 //微博登录
                 WbAuthUtils.startSinaWeiBo(ssoHandler);
+                break;
+            case R.id.weixin_login:
+                //微信登录
+                WxLogin.longWx();
                 break;
         }
     }

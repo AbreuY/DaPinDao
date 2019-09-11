@@ -1,1 +1,1 @@
-include ':app', ':takephoto_library', ':library'
+include ':app', ':takephoto_library', ':library', ':jpush', ':htmleditorlibrary'

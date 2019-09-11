@@ -12,6 +12,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -49,6 +50,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,12 +98,22 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
     TextView comments;
     @BindView(R.id.comments_btn)
     ConstraintLayout comments_btn;
+    @BindView(R.id.praise_btn)
+    ConstraintLayout praise_btn;//点赞
+    @BindView(R.id.praise)
+    ImageView praise;//点赞图标
+    @BindView(R.id.Collect)
+    ImageView Collect;//受否收藏
+    @BindView(R.id.likeCount)
+    TextView likeCount;//点赞数量
     @BindView(R.id.scroll)
     ScrollView scroll;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;//下拉加载更多评论
+    @BindView(R.id.Focus_check)
+    CheckBox Focus_check;//关注
     private String secondType;//详细类型
-    private String articleUuid;//文章、视频、快讯的uuid
+    private static String articleUuid;//文章、视频、快讯的uuid
     private int articleUserId;//文章所属作者的用户id
     private String articleTitle;//标题
     private String avatarPath;//头像地址
@@ -113,6 +125,14 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
     private String articleUuids;
     private String articleImgPath;
     private int toUserName;
+    private boolean hasLike;//是否点赞true-是，false-未
+    private boolean hasCollect;//是否收藏true-是，false-未
+    private String type;//1点赞，2取消点赞
+    private String Collecttype;//1收藏，2取消收藏
+    private static final String APP_CACAHE_DIRNAME = "/webcache";
+    private int isFans;//是否关注
+
+
 
 
     @Override
@@ -126,8 +146,13 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
         mIvBack.setOnClickListener(this);
         bt_comment.setOnClickListener(this);
         comments_btn.setOnClickListener(this);
+        praise_btn.setOnClickListener(this);
+        Collect.setOnClickListener(this);
+        Focus_check.setOnClickListener(this);
         initUI();
         initData();
+
+
 
 
 
@@ -152,6 +177,7 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
     }
     public void initData(){
         Call<ArticleDetailsModel>call = HttpHelper.getInstance().create(DaPinDaoAPI.class).getArticleDetailWeb(intent.getStringExtra("articleId"),"0",pageSize,UserId);
+        Log.e("articleId", "articleId: "+intent.getStringExtra("articleId") );
         call.enqueue(new Callback<ArticleDetailsModel>() {
             @Override
             public void onResponse(Call<ArticleDetailsModel> call, Response<ArticleDetailsModel> response) {
@@ -161,10 +187,13 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
                         model.setArticle(response.body().getArticle());
                         model.setCommentResult(response.body().getCommentResult());
                         articleUuid = response.body().getArticle().getUuid();
+                        getArticleIsCollectDetail(articleUuid);
                         articleUserId = response.body().getArticle().getUserId();
+                        ISFans(articleUserId);
                         articleTitle = response.body().getArticle().getTitle();
                         articleImgPath = response.body().getArticle().getImgPath();
                         comments.setText(""+model.getCommentResult().getTotal());
+                        //likeCount.setText(""+model.getArticle().getLikeCount());
                         totalPage = model.getCommentResult().getTotalPage();
                         title_Tv.setText(model.getArticle().getTitle());
                         userName.setText(model.getArticle().getUser().getUserName());
@@ -216,7 +245,98 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
                 Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+    }
 
+    private void ISFans(int articleUserId){
+        Log.e("articleUserId", "ISFans: "+articleUserId );
+        Call<ResponseBody> call2 = HttpHelper.getInstance().create(DaPinDaoAPI.class).judgeIsAttention(token,articleUserId);
+        call2.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.body()!=null){
+                    String jsonStr = null;//把原始数据转为字符串
+                    try {
+                        jsonStr = new String(response.body().bytes());
+                        JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                        if(jsonObject.get("code").getAsInt() == 0){
+                            isFans = Integer.parseInt(jsonObject.get("isFans").getAsString());
+                            Log.e("TAG", "onResponse: "+isFans );
+                            if(isFans == 1){
+                                Focus_check.setText("已关注");
+                                Focus_check.setChecked(true);
+                            }else if(isFans == 0){
+                                Focus_check.setText("未关注");
+                                Focus_check.setChecked(false);
+                            }
+                        }else {
+                            Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mWvContent.clearCache(true);
+        clearWebViewCache();
+    }
+
+    private void getArticleIsCollectDetail(String articleUuid){
+        //获取文章是否点赞和收藏
+        Log.e("articleUuid", "articleUuid: "+articleUuid );
+        Call<ResponseBody> call1 = HttpHelper.getInstance().create(DaPinDaoAPI.class).getArticleIsCollectDetail(token,articleUuid,"1","1");
+        call1.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.body()!=null){
+                    try {
+                        String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                        JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                        if(jsonObject.get("code").getAsInt() == 0){
+                            hasLike = jsonObject.get("hasLike").getAsBoolean();
+                            hasCollect = jsonObject.get("hasCollect").getAsBoolean();
+                            Log.e("hasLike", "hasLike: "+hasLike );
+                            if(hasLike){
+                                type ="2";
+                                praise.setImageDrawable(getResources().getDrawable(R.mipmap.praise2));
+                            }else {
+                                type ="1";
+                                praise.setImageDrawable(getResources().getDrawable(R.mipmap.praise1));
+                            }
+
+                            if(hasCollect){
+                                Collecttype = "2";
+                                Collect.setImageDrawable(getResources().getDrawable(R.mipmap.collection2));
+                            }else {
+                                Collecttype = "1";
+                                Collect.setImageDrawable(getResources().getDrawable(R.mipmap.collection1));
+                            }
+                        }else {
+                            Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 /*
@@ -335,6 +455,126 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
                 }
             });
 
+        }
+
+        if(view == praise_btn){
+            //点赞
+            Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).userLike(token,intent.getStringExtra("articleId"),articleUuid,type,"1",articleUserId);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.body()!=null){
+                        try {
+                            String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                            JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                            if(jsonObject.get("code").getAsInt() == 0){
+                                getArticleIsCollectDetail(articleUuid);
+                               // Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }else {
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        //关注
+        if(view == Focus_check){
+            if(isFans == 1){
+                Call<ResponseBody> call2 = HttpHelper.getInstance().create(DaPinDaoAPI.class).deleteAttentionUser(token, String.valueOf(articleUserId));
+                call2.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.body()!=null){
+                            String jsonStr = null;//把原始数据转为字符串
+                            try {
+                                jsonStr = new String(response.body().bytes());
+                                JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                                if(jsonObject.get("code").getAsInt() == 0){
+                                        Focus_check.setChecked(false);
+                                        Focus_check.setText("未关注");
+                                }else {
+                                    Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else {
+                Call<ResponseBody> call2 = HttpHelper.getInstance().create(DaPinDaoAPI.class).attentionUser(token, String.valueOf(articleUserId));
+                call2.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.body()!=null){
+                            String jsonStr = null;//把原始数据转为字符串
+                            try {
+                                jsonStr = new String(response.body().bytes());
+                                JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                                if(jsonObject.get("code").getAsInt() == 0){
+                                    Focus_check.setChecked(true);
+                                    Focus_check.setText("已关注");
+                                }else {
+                                    Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+
+        if(view == Collect){
+            Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).userCollect(token,intent.getStringExtra("articleId"),articleUuid,Collecttype,"1","1",articleUserId);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.body()!=null){
+                        try {
+                            String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                            JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                            if(jsonObject.get("code").getAsInt() == 0){
+                                getArticleIsCollectDetail(articleUuid);
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }else {
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -493,5 +733,62 @@ public class ArticleDetailsActivity extends BaseActivity implements View.OnClick
         });
         dialog.show();
     }
+
+
+    /**
+     * 清除WebView缓存
+     */
+    public void clearWebViewCache(){
+
+        //清理Webview缓存数据库
+        try {
+            deleteDatabase("webview.db");
+            deleteDatabase("webviewCache.db");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //WebView 缓存文件
+        File appCacheDir = new File(getFilesDir().getAbsolutePath()+APP_CACAHE_DIRNAME);
+        Log.e("TAG", "appCacheDir path="+appCacheDir.getAbsolutePath());
+
+        File webviewCacheDir = new File(getCacheDir().getAbsolutePath()+"/webviewCache");
+        Log.e("TAG", "webviewCacheDir path="+webviewCacheDir.getAbsolutePath());
+
+        //删除webview 缓存目录
+        if(webviewCacheDir.exists()){
+            deleteFile(webviewCacheDir);
+        }
+        //删除webview 缓存 缓存目录
+        if(appCacheDir.exists()){
+            deleteFile(appCacheDir);
+        }
+    }
+
+    /**
+     * 递归删除 文件/文件夹
+     *
+     * @param file
+     */
+    public void deleteFile(File file) {
+
+        Log.i("TAG", "delete file path=" + file.getAbsolutePath());
+
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File files[] = file.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    deleteFile(files[i]);
+                }
+            }
+            file.delete();
+        } else {
+            Log.e("TAG", "delete file no exists " + file.getAbsolutePath());
+        }
+    }
+
+
 
 }

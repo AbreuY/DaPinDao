@@ -1,5 +1,6 @@
 package com.example.dapindao.Presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.dapindao.View.BannerViewPager;
 import com.example.dapindao.View.FilmCriticsFragment;
 import com.example.dapindao.View.VideoDetailsActivity;
 import com.example.dapindao.retrofit.HttpHelper;
+import com.example.dapindao.utils.RecyclerViewEmptySupport;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -32,13 +34,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FilmCriticsPresenter implements AlertsInterface.Presenter{
-    private FilmCriticsFragment fragment;
+    private Context context;
     private AlertsInterface.View view;
+    private BannerViewPager banner;
+    private FilmCriticsAdapter adapter;
+    private RecyclerViewEmptySupport recyclerViewEmptySupport;
     private List<String> listurl = new ArrayList<>();
     private List<String> title = new ArrayList<>();
-    public FilmCriticsPresenter(FilmCriticsFragment fragment,AlertsInterface.View view){
-        this.fragment = fragment;
+    public FilmCriticsPresenter(Context context, BannerViewPager banner, FilmCriticsAdapter adapter, RecyclerViewEmptySupport recyclerViewEmptySupport,AlertsInterface.View view){
+        this.context = context;
         this.view = view;
+        this.banner = banner;
+        this.adapter = adapter;
+        this.recyclerViewEmptySupport = recyclerViewEmptySupport;
+
     }
 
 
@@ -53,7 +62,7 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
                             listurl.add(response.body().getResult().getRows().get(i).getImgPath());
                             title.add(response.body().getResult().getRows().get(i).getTitle());
                         }
-                        fragment.banner.initBanner(listurl, false,title)//图片地址，关闭3D画廊效果
+                        banner.initBanner(listurl, false,title)//图片地址，关闭3D画廊效果
                                 .addPageMargin(0, 0)//参数1page之间的间距,参数2中间item距离边界的间距
                                 .addPoint(3)
                                 .addPointBottom(7)
@@ -61,13 +70,13 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
                                 .finishConfig()//这句必须加
                                 .addBannerListener(new BannerViewPager.OnClickBannerListener() {
                                     @Override
-                                    public void onBannerClick(int position) {
+                                    public void onBannerClick(int position){
                                         //点击item
-                                       Intent intent = new Intent(fragment.getContext(), VideoDetailsActivity.class);
+                                       Intent intent = new Intent(context, VideoDetailsActivity.class);
                                          intent.putExtra("id",response.body().getResult().getRows().get(position).getId());
                                         intent.putExtra("secondType","3");
                                         intent.putExtra("articleUuid",response.body().getResult().getRows().get(position).getUuid());
-                                        fragment.startActivity(intent);
+                                        context.startActivity(intent);
                                     }
                                 });
                     }
@@ -94,16 +103,17 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
                         if(jsonObject.get("code").getAsInt() == 0){
                             JsonObject object = jsonObject.get("result").getAsJsonObject();
                             JsonArray jsonElements = object.getAsJsonArray("rows");
-                            fragment.adapter = new FilmCriticsAdapter(fragment.getContext(),jsonElements);
-                            fragment.recyclerView.setAdapter(fragment.adapter);
-                            fragment.adapter.setOnitemClickListener(new FilmCriticsAdapter.OnitemClickListener() {
+                            adapter = new FilmCriticsAdapter(context,jsonElements);
+                            recyclerViewEmptySupport.setAdapter(adapter);
+                            adapter.setOnitemClickListener(new FilmCriticsAdapter.OnitemClickListener() {
                                 @Override
                                 public void onItemClick(View view, int position) {
                                     JsonObject object1 = jsonElements.get(position).getAsJsonObject();
                                     Log.e("id", "onItemClick: "+object1.get("id").getAsString());
-                                    Intent intent = new Intent(fragment.getContext(), VideoDetailsActivity.class);
+                                    Intent intent = new Intent(context, VideoDetailsActivity.class);
+                                    intent.putExtra("secondType","3");
                                     intent.putExtra("id",object1.get("id").getAsString());
-                                    fragment.startActivity(intent);
+                                    context.startActivity(intent);
                                 }
                             });
                             int total = object.get("total").getAsInt();
@@ -121,7 +131,7 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
                             }
 
                         }else {
-                            Toast.makeText(fragment.getContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -132,7 +142,7 @@ public class FilmCriticsPresenter implements AlertsInterface.Presenter{
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(fragment.getContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(context,t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }

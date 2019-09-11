@@ -219,6 +219,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <LinearLayout
+                            android:id="@+id/lin_FilmCritics"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:layout_weight="1"
@@ -282,6 +283,7 @@
                                 />
                         </LinearLayout>
                         <LinearLayout
+                            android:id="@+id/Writingcenter_lin"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:layout_weight="1"
@@ -299,7 +301,7 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="12sp"
                                 android:textColor="@color/black"
-                                android:text="专业版"
+                                android:text="创作中心"
                                 />
                         </LinearLayout>
 
@@ -398,69 +400,15 @@
                 tools:layout_editor_absoluteX="-111dp"
                 tools:layout_editor_absoluteY="-487dp"
                 tools:ignore="MissingConstraints" />
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="263dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="更多>"
-                    android:textColor="#252525"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints" />
-                <TextView
-                    android:layout_width="75dp"
-                    android:layout_height="10dp"
-                    android:background="#FFE017"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView18"
-                    app:layout_constraintStart_toStartOf="@+id/textView18"
-                    app:layout_constraintTop_toTopOf="@+id/textView18"
-                    app:layout_constraintVertical_bias="1.0"
-                    tools:ignore="MissingConstraints" />
-
-                <TextView
-                    android:id="@+id/textView18"
-                    android:layout_width="72dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="最新视频"
-                    android:textColor="#3D3D3D"
-                    android:textSize="17sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.05"
-                    tools:ignore="MissingConstraints" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <com.scwang.smartrefresh.layout.SmartRefreshLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/refreshLayoutActive_Goods"
-
+            <LinearLayout
+                android:id="@+id/group"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <com.example.dapindao.utils.RecyclerViewEmptySupport
-                    android:id="@+id/Active_Goods_recyclerView"
-                    android:elevation="4dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                  />
 
-            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

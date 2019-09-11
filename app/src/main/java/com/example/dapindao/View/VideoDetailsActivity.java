@@ -1,5 +1,6 @@
 package com.example.dapindao.View;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -86,6 +87,7 @@ public class VideoDetailsActivity extends BaseActivity implements View.OnClickLi
     private String articleImgPath;
     private int toUserName;
     private String token;
+    private Intent intent;
     private String avatarPath;//头像地址
     private VedioesDetailModel model;
     @BindView(R.id.comments_btn)
@@ -95,6 +97,20 @@ public class VideoDetailsActivity extends BaseActivity implements View.OnClickLi
     @BindView(R.id.detail_page_do_comment)
     TextView bt_comment;
 
+    @BindView(R.id.praise_btn)
+    ConstraintLayout praise_btn;//点赞
+    @BindView(R.id.praise)
+    ImageView praise;//点赞图标
+    @BindView(R.id.Collect)
+    ImageView Collect;//受否收藏
+    @BindView(R.id.likeCount)
+    TextView likeCount;//点赞数量
+
+    private boolean hasLike;//是否点赞true-是，false-未
+    private boolean hasCollect;//是否收藏true-是，false-未
+    private String type;//1点赞，2取消点赞
+    private String Collecttype;//1收藏，2取消收藏
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +119,14 @@ public class VideoDetailsActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.videodetails);
         StatusBarUtil.setColor(this,getResources().getColor(R.color.black));
         ButterKnife.bind(this);
+        intent = getIntent();
+        secondType = intent.getStringExtra("secondType");
         back.setOnClickListener(this);
         downloadbtn.setOnClickListener(this);
         bt_comment.setOnClickListener(this);
         comments_btn.setOnClickListener(this);
+        praise_btn.setOnClickListener(this);
+        Collect.setOnClickListener(this);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorEventListener = new Jzvd.JZAutoFullscreenListener();
         video_player.setAllControlsVisiblity(GONE, GONE, VISIBLE, GONE, VISIBLE, VISIBLE, GONE);
@@ -136,8 +156,10 @@ public class VideoDetailsActivity extends BaseActivity implements View.OnClickLi
                         title.setText(response.body().getVedioes().getTitle());
                         video_player.startVideo();
                         articleUuid = response.body().getVedioes().getUuid();
+                        getArticleIsCollectDetail(articleUuid);
                         articleTitle = response.body().getVedioes().getTitle();
                         articleImgPath = response.body().getVedioes().getImgPath();
+                        //likeCount.setText(""+model.getVedioes().getLikeCount());
                         comments.setText(""+model.getCommentResult().getTotal());
                         //默认展开所有回复
                         commentsList= model.getCommentResult().getList();
@@ -173,6 +195,53 @@ public class VideoDetailsActivity extends BaseActivity implements View.OnClickLi
         });
     }
 
+
+    private void getArticleIsCollectDetail(String articleUuid){
+        //获取文章是否点赞和收藏
+        Log.e("articleUuid", "articleUuid: "+articleUuid );
+        Call<ResponseBody> call1 = HttpHelper.getInstance().create(DaPinDaoAPI.class).getArticleIsCollectDetail(token,articleUuid,"1","1");
+        call1.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.body()!=null){
+                    try {
+                        String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                        JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                        if(jsonObject.get("code").getAsInt() == 0){
+                            hasLike = jsonObject.get("hasLike").getAsBoolean();
+                            hasCollect = jsonObject.get("hasCollect").getAsBoolean();
+                            Log.e("hasLike", "hasLike: "+hasLike );
+                            if(hasLike){
+                                type ="2";
+                                praise.setImageDrawable(getResources().getDrawable(R.mipmap.praise2));
+                            }else {
+                                type ="1";
+                                praise.setImageDrawable(getResources().getDrawable(R.mipmap.praise1));
+                            }
+
+                            if(hasCollect){
+                                Collecttype = "2";
+                                Collect.setImageDrawable(getResources().getDrawable(R.mipmap.collection2));
+                            }else {
+                                Collecttype = "1";
+                                Collect.setImageDrawable(getResources().getDrawable(R.mipmap.collection1));
+                            }
+                        }else {
+                            Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -195,6 +264,68 @@ public class VideoDetailsActivity extends BaseActivity implements View.OnClickLi
         }
         if(view ==bt_comment){
             showCommentDialog();
+        }
+        if(view == praise_btn){
+            //点赞
+            Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).userLike(token,getIntent().getStringExtra("id"),articleUuid,type, getIntent().getStringExtra("secondType"),articleUserId);
+            Log.e("TAG", "onClick: "+ getIntent().getStringExtra("id"));
+            Log.e("articleUuid", "articleUuid: "+ articleUuid);
+            Log.e("type", "type: "+ type);
+            Log.e("secondType", "secondType: "+ secondType);
+            Log.e("articleUserId", "articleUserId: "+articleUserId);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.body()!=null){
+                        try {
+                            String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                            JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                            if(jsonObject.get("code").getAsInt() == 0){
+                                getArticleIsCollectDetail(articleUuid);
+                            }else {
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        if(view == Collect){
+            Call<ResponseBody> call = HttpHelper.getInstance().create(DaPinDaoAPI.class).userCollect(token,getIntent().getStringExtra("id"),articleUuid,Collecttype,"1",getIntent().getStringExtra("secondType"),articleUserId);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.body()!=null){
+                        try {
+                            String jsonStr = new String(response.body().bytes());//把原始数据转为字符串
+                            JsonObject jsonObject = (JsonObject) new JsonParser().parse(jsonStr);
+                            if(jsonObject.get("code").getAsInt() == 0){
+                                getArticleIsCollectDetail(articleUuid);
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }else {
+                                Toast.makeText(getApplicationContext(),jsonObject.get("msg").getAsString(),Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 

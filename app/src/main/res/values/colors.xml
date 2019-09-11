@@ -14,6 +14,7 @@
     <color name="selector_grey">#DDDDDD</color>
     <color name="transparent">#00000000</color>
     <color name="color_d43d3d">#d43d3d</color>
+    <color name="actioncolor">#377AFF</color>
     <color name="BLACK">#3D3D3D</color>
     <color name="red">#FF0000</color>
     <color name="gray">#F9F9F9</color>
@@ -24,4 +25,9 @@
     <color name="color_C1C1C1">#C1C1C1</color>
     <color name="translucent">#aa000000</color>
     <color name="color_d8d8d8">#d8d8d8</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_900">#212121</color>
+    <color name="t1">#FE9C2C</color>
+    <color name="t2">#08B20E</color>
+    <color name="t3">#F55252</color>
 </resources>

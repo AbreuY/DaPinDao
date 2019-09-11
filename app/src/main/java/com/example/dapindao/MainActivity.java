@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,9 +27,11 @@ import com.example.dapindao.View.LoginActivity;
 import com.example.dapindao.View.MyFragment;
 import com.example.dapindao.retrofit.HttpHelper;
 import com.example.dapindao.utils.BaseActivity;
+import com.example.dapindao.utils.ExampleUtil;
 import com.example.dapindao.utils.Utils;
 
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
 import cn.jzvd.JzvdStd;
 import me.majiajie.pagerbottomtabstrip.NavigationController;
 import me.majiajie.pagerbottomtabstrip.PageBottomTabLayout;
@@ -47,6 +53,12 @@ public class MainActivity extends BaseActivity {
     private FoundFragment foundFragment;//发现
     private MyFragment myFragment;//我的
     private String token;
+    public static boolean isForeground = false;
+    private MessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.example.dapindao.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,29 +69,37 @@ public class MainActivity extends BaseActivity {
         }
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         setContentView(R.layout.activity_main);
+        initt();
+        registerMessageReceiver();  // used for receive msg
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setVisibility(View.GONE);
-        token = Utils.getShared2(getApplicationContext(),"token");
+
         Log.e("token是：", "onCreate: "+token );
         ButterKnife.bind(this);
-        DapinDaoApp.LoadUserModel(token);
+
         initUI();//初始化界面
 
     }
 
     @Override
     protected void onResume() {
+        isForeground = true;
         super.onResume();
         toolbar.setVisibility(View.GONE);
         //home back
         JzvdStd.goOnPlayOnResume();
+        token = Utils.getShared2(getApplicationContext(),"token");
         Log.e("token是：", "onCreate: "+token );
+        if(!token.equals("")){
+            DapinDaoApp.LoadUserModel(token);
+        }
     }
 
     @Override
     protected void onPause() {
+        isForeground = false;
         super.onPause();
         //Jzvd.clearSavedProgress(this, null);
         //home back
@@ -87,10 +107,47 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    // 初始化 JPush。如果已经初始化，但没有登录成功，则执行重新登录。
+    private void initt(){
+        JPushInterface.init(getApplicationContext());
+    }
+
     @Override
     protected void init() {
 
     }
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+    public class MessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String messge = intent.getStringExtra(KEY_MESSAGE);
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    StringBuilder showMsg = new StringBuilder();
+                    showMsg.append(KEY_MESSAGE + " : " + messge + "\n");
+                    if (!ExampleUtil.isEmpty(extras)) {
+                        showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
+                    }
+                   // setCostomMsg(showMsg.toString());
+                }
+            } catch (Exception e){
+            }
+        }
+    }
+/*    private void setCostomMsg(String msg){
+        if (null != msgText) {
+            msgText.setText(msg);
+            msgText.setVisibility(View.VISIBLE);
+        }
+    }*/
 
     private void initUI(){
         tvToolTitle = (TextView) findViewById(R.id.toolbar_title);

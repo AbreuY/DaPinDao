@@ -6,18 +6,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.dapindao.API.DaPinDaoAPI;
+import com.example.dapindao.Presenter.FoundPresenter;
 import com.example.dapindao.R;
+import com.example.dapindao.retrofit.HttpHelper;
+import com.example.dapindao.utils.RecyclerViewEmptySupport;
+import com.example.dapindao.utils.Utils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FoundFragment extends Fragment implements View.OnClickListener {
     //发现
@@ -30,7 +43,13 @@ public class FoundFragment extends Fragment implements View.OnClickListener {
     LinearLayout lin_yaokan;//幺看
     @BindView(R.id.project_lin)
     LinearLayout project_lin;
-    private List<String> listurl = new ArrayList<>();
+    @BindView(R.id.lin_FilmCritics)
+    LinearLayout lin_FilmCritics;//影评
+    @BindView(R.id.Writingcenter_lin)
+    LinearLayout Writingcenter_lin;//创作中心
+    private FoundPresenter presenter;
+    @BindView(R.id.group)
+    public LinearLayout group;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,27 +57,11 @@ public class FoundFragment extends Fragment implements View.OnClickListener {
         ButterKnife.bind(this,view);
         initUI();
         initEvent();
-        String url1 = "http://chuantu.xyz/t6/702/1565596493x2890191699.jpg";
-        String url2 = "http://chuantu.xyz/t6/702/1565596561x1033347913.jpg";
-        String url3 = "http://chuantu.xyz/t6/702/1565596594x1031866013.jpg";
-        listurl.add(url1);
-        listurl.add(url2);
-        listurl.add(url3);
-        mViewPager.initBanner(listurl, false)//图片地址，关闭3D画廊效果
-                .addPageMargin(15, 60)//参数1page之间的间距,参数2中间item距离边界的间距
-                .addPoint(5)//添加指示器,5dp
-                .addPointBottom(7)
-                .addStartTimer(5)//自动轮播5秒间隔
-                .addRoundCorners(12)//圆角
-                .finishConfig()//这句必须加
-                .addBannerListener(new BannerViewPager.OnClickBannerListener() {
-                    @Override
-                    public void onBannerClick(int position) {
-                        //点击item
-                    }
-                });
+        presenter = new FoundPresenter(getActivity(),mViewPager,group);
+        presenter.mainPage(3);
         return view;
     }
+
 
     private void initUI(){
 
@@ -67,6 +70,8 @@ public class FoundFragment extends Fragment implements View.OnClickListener {
         lin_subscribe.setOnClickListener(this);
         lin_yaokan.setOnClickListener(this);
         project_lin.setOnClickListener(this);
+        lin_FilmCritics.setOnClickListener(this);
+        Writingcenter_lin.setOnClickListener(this);
     }
 
     @Override
@@ -86,6 +91,16 @@ public class FoundFragment extends Fragment implements View.OnClickListener {
             case R.id.project_lin:
                 //专题
                 intent = new Intent(getContext(),ProjectActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.lin_FilmCritics:
+                //影评
+                intent = new Intent(getContext(),FilmCriticsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.Writingcenter_lin:
+                //创作中心
+                intent = new Intent(getContext(),ArticleListsActivity.class);
                 startActivity(intent);
                 break;
         }

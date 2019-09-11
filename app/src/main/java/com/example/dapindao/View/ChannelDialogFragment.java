@@ -172,6 +172,8 @@ public class ChannelDialogFragment extends DialogFragment implements OnChannelDr
 
         if (mOnChannelListener != null)
             mOnChannelListener.onMoveToMyChannel(starPos - 1 - mAdapter.getMyChannelSize(), endPos - 1);
+            mAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -180,5 +182,6 @@ public class ChannelDialogFragment extends DialogFragment implements OnChannelDr
         onMove(starPos, endPos);
         if (mOnChannelListener != null)
             mOnChannelListener.onMoveToOtherChannel(starPos - 1, endPos - 2 - mAdapter.getMyChannelSize());
+             mAdapter.notifyDataSetChanged();
     }
 }
